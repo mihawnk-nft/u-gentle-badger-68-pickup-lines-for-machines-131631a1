@@ -30,8 +30,10 @@ def main():
     text = LINE.strip()
     if not (1 <= len(text) <= 200):
         raise ValueError("line must be 1-200 characters, got %d" % len(text))
-    if not text.strip():
-        raise ValueError("line must not be only whitespace")
+    # A whitespace-only line is already caught above (strip() leaves ""),
+    # but a newline inside the line would break the one-line gate.
+    if "\n" in text or "\r" in text:
+        raise ValueError("line must be a single line")
     os.makedirs(os.path.dirname(DST), exist_ok=True)
     with open(DST, "w", encoding="utf-8", newline="\n") as f:
         f.write(text + "\n")
